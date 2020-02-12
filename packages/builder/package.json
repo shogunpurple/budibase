@@ -45,7 +45,8 @@
     "safe-buffer": "^5.1.2",
     "shortid": "^2.2.8",
     "string_decoder": "^1.2.0",
-    "uikit": "^3.1.7"
+    "uikit": "^3.1.7",
+    "xstate": "^4.7.8"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
