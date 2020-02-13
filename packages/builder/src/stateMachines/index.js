@@ -18,7 +18,17 @@ export const componentPanelMachine = Machine({
       states: {
         properties: {},
         layout: {},
-        code: {},
+        code: {
+          initial: "showing",
+          on: {
+            SHOW: "code.showing",
+            HIDE: "code.hidden",
+          },
+          states: {
+            showing: {},
+            hidden: {},
+          },
+        },
         events: {},
       },
     },

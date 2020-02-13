@@ -8,6 +8,8 @@
 
   export let onCodeChanged
   export let code
+  export let onSave
+  export let showing
 
   export const show = () => {
     UIkit.modal(codeModal).show()
@@ -38,15 +40,17 @@
   }
 
   const cancel = () => {
-    UIkit.modal(codeModal).hide()
+    onSave()
     currentCode = originalCode
   }
 
   const save = () => {
     originalCode = currentCode
     onCodeChanged(currentCode)
-    UIkit.modal(codeModal).hide()
+    onSave()
   }
+
+  $: showing ? show() : UIkit.modal(codeModal).hide()
 </script>
 
 <div bind:this={codeModal} uk-modal>

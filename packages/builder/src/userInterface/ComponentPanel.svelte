@@ -77,12 +77,12 @@
       <EventsEditor {component} {components} {onPropChanged} />
     {/if}
 
-    {#if $stateMachineStore.matches('info.code')}
-      <CodeEditor
-        bind:this={codeEditor}
-        code={component._code}
-        onCodeChanged={store.setComponentCode} />
-    {/if}
+    <CodeEditor
+      showing={$stateMachineStore.matches('info.code.showing')}
+      bind:this={codeEditor}
+      code={component._code}
+      onCodeChanged={store.setComponentCode}
+      onSave={() => stateMachineStore.send('HIDE')} />
 
   </div>
 
