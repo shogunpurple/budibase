@@ -1,14 +1,25 @@
-import { Machine } from "xstate";
+import { Machine } from "xstate"
 
 export const componentPanelMachine = Machine({
   id: "sidePanel",
-  initial: "properties",
+  initial: "info",
   on: {
-    PROPERTIES: "properties",
-    LAYOUT: "layout"
+    INFO: "info",
+    COMPONENTS: "components",
   },
   states: {
-    properties: {},
-    layout: {}
-  }
-});
+    info: {
+      on: {
+        PROPERTIES: "info.properties",
+        LAYOUT: "info.layout",
+        EVENTS: "info.events",
+      },
+      states: {
+        properties: {},
+        layout: {},
+        events: {},
+      },
+    },
+    components: {},
+  },
+})
