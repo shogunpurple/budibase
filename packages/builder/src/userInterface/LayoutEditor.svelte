@@ -50,7 +50,11 @@
     <div class="grid">
       <h5>{name}:</h5>
       <InputGroup
-        onStyleChanged={_value => onStyleChanged('layout', key, _value)}
+        onStyleChanged={_value => onStyleChanged({
+            category: 'layout',
+            key,
+            value: _value,
+          })}
         values={layout[key] || newValue(meta.length)}
         {meta}
         {size}
@@ -65,7 +69,11 @@
     <div class="grid">
       <h5>{name}:</h5>
       <InputGroup
-        onStyleChanged={_value => onStyleChanged('position', key, _value)}
+        onStyleChanged={_value => onStyleChanged({
+            category: 'position',
+            key,
+            value: _value,
+          })}
         values={layout[key] || newValue(meta.length)}
         {meta}
         {size} />
@@ -79,7 +87,11 @@
     <div class="grid">
       <h5>{name}:</h5>
       <InputGroup
-        onStyleChanged={_value => onStyleChanged('position', key, _value)}
+        onStyleChanged={_value => onStyleChanged({
+            category: 'position',
+            key,
+            value: _value,
+          })}
         values={layout[key] || newValue(meta.length)}
         {meta}
         {size} />
@@ -93,7 +105,11 @@
     <div class="grid">
       <h5>{name}:</h5>
       <InputGroup
-        onStyleChanged={_value => onStyleChanged('position', key, _value)}
+        onStyleChanged={_value => onStyleChanged({
+            category: 'position',
+            key,
+            value: _value,
+          })}
         values={layout[key] || newValue(meta.length)}
         {meta}
         {size} />

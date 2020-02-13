@@ -72,7 +72,9 @@
     {#if $stateMachineStore.matches('info.properties')}
       <PropsView {component} {components} {onPropChanged} />
     {:else if $stateMachineStore.matches('info.layout')}
-      <LayoutEditor {onStyleChanged} {component} />
+      <LayoutEditor
+        onStyleChanged={prop => stateMachineStore.send('UPDATEPROP', prop)}
+        {component} />
     {:else if $stateMachineStore.matches('info.events')}
       <EventsEditor {component} {components} {onPropChanged} />
     {/if}
