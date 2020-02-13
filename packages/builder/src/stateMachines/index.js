@@ -36,7 +36,17 @@ export const componentPanelMachine = Machine(
               hidden: {},
             },
           },
-          events: {},
+          events: {
+            initial: "viewing",
+            on: {
+              VIEWING: ".viewing",
+              EDITING: ".editing"
+            },
+            states: {
+              viewing: {},
+              editing: {}
+            }
+          },
         },
       },
       components: {},
@@ -44,7 +54,9 @@ export const componentPanelMachine = Machine(
   },
   {
     actions: {
-      updateProp: (ctx, e) => console.log("updateProp", e),
+      updateProp: (ctx, e) => { 
+        console.log("updateProp", e);
+      }
     },
   }
 )

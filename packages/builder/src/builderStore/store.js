@@ -72,7 +72,12 @@ export const getStore = () => {
 
   const store = writable(initial)
 
-  const stateMachineStore = createStore(componentPanelMachine);
+  const storeBoundComponentPanelMachine = componentPanelMachine.withContext({
+
+  });
+
+
+  const stateMachineStore = createStore(storeBoundComponentPanelMachine);
 
   store.initialise = initialise(store, initial)
   store.newChildRecord = newRecord(store, false)

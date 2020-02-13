@@ -19,6 +19,7 @@
   import Modal from "../../common/Modal.svelte"
   import EventEditorModal from "./EventEditorModal.svelte"
   import HandlerSelector from "./HandlerSelector.svelte"
+  import { stateMachineStore } from "../../builderStore";
 
   import { PencilIcon } from "../../common/Icons"
   import { EVENT_TYPE_MEMBER_NAME } from "../../common/eventHandlers"
@@ -48,13 +49,16 @@
 
   const openModal = event => {
     selectedEvent = event
-    modalOpen = true
+    stateMachineStore.send("EDITING");
   }
 
   const closeModal = () => {
+    stateMachineStore.send("VIEWING");
     selectedEvent = null
-    modalOpen = false
   }
+
+  $: modalOpen = $stateMachineStore.matches("info.events.editing");
+
 </script>
 
 <header>

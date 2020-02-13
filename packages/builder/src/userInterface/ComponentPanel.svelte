@@ -22,10 +22,6 @@
   $: description = component.description
   $: components = $store.components
 
-  $: {
-    console.log($stateMachineStore)
-  }
-
   const onPropChanged = store.setComponentProp
   const onStyleChanged = store.setComponentStyle
 </script>
