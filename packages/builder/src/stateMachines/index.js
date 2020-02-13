@@ -10,7 +10,7 @@ export const componentPanelMachine = Machine(
       COMPONENTS: "components",
       CHANGECOMPONENT: {
         actions: assign({
-          component: (ctx, event) => event.component,
+          component: (_, { component }) => component,
         }),
       },
     },
