@@ -1,4 +1,5 @@
-import { Machine } from "xstate"
+import { Machine, assign } from "xstate"
+import { set } from "lodash"
 
 export const componentPanelMachine = Machine(
   {
@@ -7,6 +8,11 @@ export const componentPanelMachine = Machine(
     on: {
       INFO: "info",
       COMPONENTS: "components",
+      CHANGECOMPONENT: {
+        actions: assign({
+          component: (ctx, event) => event.component,
+        }),
+      },
     },
     states: {
       info: {
@@ -40,12 +46,12 @@ export const componentPanelMachine = Machine(
             initial: "viewing",
             on: {
               VIEWING: ".viewing",
-              EDITING: ".editing"
+              EDITING: ".editing",
             },
             states: {
               viewing: {},
-              editing: {}
-            }
+              editing: {},
+            },
           },
         },
       },
@@ -54,9 +60,10 @@ export const componentPanelMachine = Machine(
   },
   {
     actions: {
-      updateProp: (ctx, e) => { 
-        console.log("updateProp", e);
-      }
+      updateProp: assign({
+        component: ({ component }, { category, value, key }) =>
+          set(component, `_styles.${category}.${key}`, value),
+      }),
     },
   }
 )

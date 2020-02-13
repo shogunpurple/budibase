@@ -121,6 +121,7 @@ const lodash_exports = [
   "find",
   "orderBy",
   "union",
+  "set",
 ]
 
 const outputpath = "../server/builder"

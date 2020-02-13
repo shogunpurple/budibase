@@ -1,25 +1,26 @@
-import { readable } from "svelte/store";
-import { interpret } from "xstate";
+import { readable } from "svelte/store"
+import { interpret } from "xstate"
 
 export function createStore(machine, options) {
-  const service = interpret(machine, options);
+  const service = interpret(machine, options)
 
   const { subscribe } = readable(machine.initialState, set => {
     service.onTransition(state => {
       if (state.changed) {
-        set(state);
+        console.log(state)
+        set(state)
       }
-    });
+    })
 
-    service.start();
+    service.start()
 
     return () => {
-      service.stop();
-    };
-  });
+      service.stop()
+    }
+  })
 
   return {
     subscribe,
-    send: service.send
-  };
+    send: service.send,
+  }
 }

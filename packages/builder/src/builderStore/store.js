@@ -73,11 +73,16 @@ export const getStore = () => {
   const store = writable(initial)
 
   const storeBoundComponentPanelMachine = componentPanelMachine.withContext({
+    component: initial.currentComponentInfo,
+  })
 
-  });
+  const stateMachineStore = createStore(storeBoundComponentPanelMachine)
 
-
-  const stateMachineStore = createStore(storeBoundComponentPanelMachine);
+  store.subscribe(s =>
+    stateMachineStore.send("CHANGECOMPONENT", {
+      component: s.currentComponentInfo,
+    })
+  )
 
   store.initialise = initialise(store, initial)
   store.newChildRecord = newRecord(store, false)
@@ -121,7 +126,7 @@ export const getStore = () => {
   store.setComponentCode = setComponentCode(store)
   store.setScreenType = setScreenType(store)
 
-  return [store, stateMachineStore];
+  return [store, stateMachineStore]
 }
 
 export default getStore
