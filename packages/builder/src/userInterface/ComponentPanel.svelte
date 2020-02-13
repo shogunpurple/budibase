@@ -1,6 +1,6 @@
 <script>
   import PropsView from "./PropsView.svelte"
-  import { store } from "../builderStore"
+  import { store, stateMachineStore } from "../builderStore"
   import IconButton from "../common/IconButton.svelte"
   import {
     LayoutIcon,
@@ -22,6 +22,10 @@
   $: description = component.description
   $: components = $store.components
 
+  $: {
+    console.log($stateMachineStore); 
+  }
+
   const onPropChanged = store.setComponentProp
   const onStyleChanged = store.setComponentStyle
 </script>
@@ -30,15 +34,15 @@
   <ul>
     <li>
       <button
-        class:selected={current_view === 'props'}
-        on:click={() => (current_view = 'props')}>
+        class:selected={$stateMachineStore.matches("properties")}
+        on:click={() => stateMachineStore.send("PROPERTIES") }>
         <PaintIcon />
       </button>
     </li>
     <li>
       <button
-        class:selected={current_view === 'layout'}
-        on:click={() => (current_view = 'layout')}>
+        class:selected={$stateMachineStore.matches("layout")}
+        on:click={() => stateMachineStore.send("LAYOUT") }>
         <LayoutIcon />
       </button>
     </li>
@@ -66,9 +70,9 @@
 
   <div class="component-props-container">
 
-    {#if current_view === 'props'}
+    {#if $stateMachineStore.matches("properties")}
       <PropsView {component} {components} {onPropChanged} />
-    {:else if current_view === 'layout'}
+    {:else if $stateMachineStore.matches("layout")}
       <LayoutEditor {onStyleChanged} {component} />
     {:else if current_view === 'events'}
       <EventsEditor {component} {components} {onPropChanged} />

@@ -1,10 +1,10 @@
 import { readable } from "svelte/store";
 import { interpret } from "xstate";
 
-export function useMachine(machine, options) {
+export function createStore(machine, options) {
   const service = interpret(machine, options);
 
-  const store = readable(machine.initialState, set => {
+  const { subscribe } = readable(machine.initialState, set => {
     service.onTransition(state => {
       if (state.changed) {
         set(state);
@@ -19,7 +19,7 @@ export function useMachine(machine, options) {
   });
 
   return {
-    state: store,
+    subscribe,
     send: service.send
   };
 }

@@ -37,7 +37,8 @@ import {
 } from "./loadComponentLibraries"
 import { buildCodeForScreens } from "./buildCodeForScreens"
 import { generate_screen_css } from "./generate_css"
-// import { uuid } from "./uuid"
+import { createStore } from "./createStore";
+import { componentPanelMachine } from "../stateMachines";
 
 let appname = ""
 
@@ -70,6 +71,8 @@ export const getStore = () => {
   }
 
   const store = writable(initial)
+
+  const stateMachineStore = createStore(componentPanelMachine);
 
   store.initialise = initialise(store, initial)
   store.newChildRecord = newRecord(store, false)
@@ -112,7 +115,8 @@ export const getStore = () => {
   store.setComponentStyle = setComponentStyle(store)
   store.setComponentCode = setComponentCode(store)
   store.setScreenType = setScreenType(store)
-  return store
+
+  return [store, stateMachineStore];
 }
 
 export default getStore
@@ -152,6 +156,9 @@ const initialise = (store, initial) => async () => {
       _screens: Object.values(unauth_screens),
     },
   }
+
+
+  // populate the new store
 
   initial.libraries = await loadLibs(appname, pkg)
   initial.generatorLibraries = await loadGeneratorLibs(appname, pkg)

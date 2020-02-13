@@ -1,7 +1,7 @@
 import { createPackage } from "./createPackage"
 import getStore from "./store"
 
-export const store = getStore()
+export const [store, stateMachineStore] = getStore()
 
 export const createNewPackage = () => createPackage(packageInfo, store)
 
