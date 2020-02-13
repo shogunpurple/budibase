@@ -23,7 +23,7 @@
   $: components = $store.components
 
   $: {
-    console.log($stateMachineStore); 
+    console.log($stateMachineStore)
   }
 
   const onPropChanged = store.setComponentProp
@@ -34,22 +34,22 @@
   <ul>
     <li>
       <button
-        class:selected={$stateMachineStore.matches("properties")}
-        on:click={() => stateMachineStore.send("PROPERTIES") }>
+        class:selected={$stateMachineStore.matches('info.properties')}
+        on:click={() => stateMachineStore.send('PROPERTIES')}>
         <PaintIcon />
       </button>
     </li>
     <li>
       <button
-        class:selected={$stateMachineStore.matches("layout")}
-        on:click={() => stateMachineStore.send("LAYOUT") }>
+        class:selected={$stateMachineStore.matches('info.layout')}
+        on:click={() => stateMachineStore.send('LAYOUT')}>
         <LayoutIcon />
       </button>
     </li>
     <li>
       <button
-        class:selected={current_view === 'code'}
-        on:click={() => codeEditor && codeEditor.show()}>
+        class:selected={$stateMachineStore.matches('info.code')}
+        on:click={() => stateMachineStore.send('CODE')}>
         {#if component._code && component._code.trim().length > 0}
           <div class="button-indicator">
             <CircleIndicator />
@@ -60,32 +60,31 @@
     </li>
     <li>
       <button
-        class:selected={current_view === 'events'}
-        on:click={() => (current_view = 'events')}>
+        class:selected={$stateMachineStore.matches('info.events')}
+        on:click={() => stateMachineStore.send('EVENTS')}>
         <EventsIcon />
       </button>
     </li>
   </ul>
   {$store.currentFrontEndType}
-
   <div class="component-props-container">
 
-    {#if $stateMachineStore.matches("properties")}
+    {#if $stateMachineStore.matches('info.properties')}
       <PropsView {component} {components} {onPropChanged} />
-    {:else if $stateMachineStore.matches("layout")}
+    {:else if $stateMachineStore.matches('info.layout')}
       <LayoutEditor {onStyleChanged} {component} />
-    {:else if current_view === 'events'}
+    {:else if $stateMachineStore.matches('info.events')}
       <EventsEditor {component} {components} {onPropChanged} />
     {/if}
 
-    <CodeEditor
-      bind:this={codeEditor}
-      code={component._code}
-      onCodeChanged={store.setComponentCode} />
+    {#if $stateMachineStore.matches('info.code')}
+      <CodeEditor
+        bind:this={codeEditor}
+        code={component._code}
+        onCodeChanged={store.setComponentCode} />
+    {/if}
 
   </div>
-
-  
 
 </div>
 

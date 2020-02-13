@@ -13,10 +13,12 @@ export const componentPanelMachine = Machine({
         PROPERTIES: "info.properties",
         LAYOUT: "info.layout",
         EVENTS: "info.events",
+        CODE: "info.code",
       },
       states: {
         properties: {},
         layout: {},
+        code: {},
         events: {},
       },
     },
