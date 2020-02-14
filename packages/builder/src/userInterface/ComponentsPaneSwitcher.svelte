@@ -1,9 +1,13 @@
 <script>
-  import { store } from "../builderStore/"
+  import { store, stateMachineStore } from "../builderStore/"
   import ComponentPanel from "./ComponentPanel.svelte"
   import ComponentsList from "./ComponentsList.svelte"
 
   let selected = "properties"
+
+  $: {
+    console.log($stateMachineStore.value);
+  }
 
   const isSelected = tab => selected === tab
 
@@ -15,25 +19,25 @@
     <div class="switcher">
 
       <button
-        class:selected={selected === 'properties'}
-        on:click={() => selectTab('properties')}>
+        class:selected={$stateMachineStore.matches("frontend.pageSelected.info")}
+        on:click={() => stateMachineStore.send("INFO")}>
         Properties
       </button>
 
       <button
-        class:selected={selected === 'components'}
-        on:click={() => selectTab('components')}>
+        class:selected={$stateMachineStore.matches("frontend.pageSelected.components")}
+        on:click={() => stateMachineStore.send("COMPONENTS")}>
         Components
       </button>
 
     </div>
 
     <div class="panel">
-      {#if selected === 'properties'}
+      {#if $stateMachineStore.matches("frontend.pageSelected.info")}
         <ComponentPanel />
       {/if}
 
-      {#if selected === 'components'}
+      {#if $stateMachineStore.matches("frontend.pageSelected.components")}
         <ComponentsList />
       {/if}
 

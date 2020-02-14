@@ -1,69 +1,43 @@
 import { Machine, assign } from "xstate"
 import { set } from "lodash"
+import { initialisePure } from "../builderStore/store";
+import builderMachineConfig from "./builderStateMachines";
 
-export const componentPanelMachine = Machine(
-  {
-    id: "sidePanel",
-    initial: "info",
-    on: {
-      INFO: "info",
-      COMPONENTS: "components",
-      CHANGECOMPONENT: {
-        actions: assign({
-          component: (_, { component }) => component,
-        }),
-      },
+const appMachineConfig = {
+  id: "root",
+  initial: "uninitialized",
+  states: {
+    uninitialized: {
+      invoke: {
+        src: context => initialisePure(context),
+        onDone: {
+          target: "initialized",
+          actions: (context, evt) => {
+            console.log("initialized with", context, evt);
+            assign(
+              ...context,
+              ...evt
+            )
+          } 
+        }
+      }
     },
-    states: {
-      info: {
-        on: {
-          PROPERTIES: ".properties",
-          LAYOUT: ".layout",
-          EVENTS: ".events",
-          CODE: ".code",
-        },
-        states: {
-          properties: {},
-          layout: {
-            on: {
-              UPDATEPROP: {
-                actions: "updateProp",
-              },
-            },
-          },
-          code: {
-            initial: "showing",
-            on: {
-              SHOW: ".showing",
-              HIDE: ".hidden",
-            },
-            states: {
-              showing: {},
-              hidden: {},
-            },
-          },
-          events: {
-            initial: "viewing",
-            on: {
-              VIEWING: ".viewing",
-              EDITING: ".editing",
-            },
-            states: {
-              viewing: {},
-              editing: {},
-            },
-          },
-        },
-      },
-      components: {},
-    },
-  },
-  {
-    actions: {
-      updateProp: assign({
-        component: ({ component }, { category, value, key }) =>
-          set(component, `_styles.${category}.${key}`, value),
-      }),
-    },
+    initialized: {
+      ...builderMachineConfig
+    }
   }
-)
+};
+
+const appMachineOptions = {
+  actions: {
+    updateProp: assign({
+      component: ({ component }, { category, value, key }) =>
+        set(component, `_styles.${category}.${key}`, value),
+    }),
+  },
+  activities: {},
+  guards: {},
+  services: {}
+}
+
+export default Machine(appMachineConfig, appMachineOptions);

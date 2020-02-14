@@ -21,6 +21,10 @@
   $: name = component.name
   $: description = component.description
   $: components = $store.components
+  $: { 
+    console.log("updatedValue", $stateMachineStore.value)
+    console.log("context", $stateMachineStore.context)
+  }
 
   const onPropChanged = store.setComponentProp
   const onStyleChanged = store.setComponentStyle
@@ -30,21 +34,21 @@
   <ul>
     <li>
       <button
-        class:selected={$stateMachineStore.matches('info.properties')}
+        class:selected={$stateMachineStore.matches('frontend.pageSelected.info.properties')}
         on:click={() => stateMachineStore.send('PROPERTIES')}>
         <PaintIcon />
       </button>
     </li>
     <li>
       <button
-        class:selected={$stateMachineStore.matches('info.layout')}
+        class:selected={$stateMachineStore.matches('frontend.pageSelected.info.layout')}
         on:click={() => stateMachineStore.send('LAYOUT')}>
         <LayoutIcon />
       </button>
     </li>
     <li>
       <button
-        class:selected={$stateMachineStore.matches('info.code')}
+        class:selected={$stateMachineStore.matches('frontend.pageSelected.info.code')}
         on:click={() => stateMachineStore.send('CODE')}>
         {#if component._code && component._code.trim().length > 0}
           <div class="button-indicator">
@@ -56,7 +60,7 @@
     </li>
     <li>
       <button
-        class:selected={$stateMachineStore.matches('info.events')}
+        class:selected={$stateMachineStore.matches('frontend.pageSelected.info.events')}
         on:click={() => stateMachineStore.send('EVENTS')}>
         <EventsIcon />
       </button>
@@ -65,18 +69,18 @@
   {$store.currentFrontEndType}
   <div class="component-props-container">
 
-    {#if $stateMachineStore.matches('info.properties')}
+    {#if $stateMachineStore.matches('frontend.pageSelected.info.properties')}
       <PropsView {component} {components} {onPropChanged} />
-    {:else if $stateMachineStore.matches('info.layout')}
+    {:else if $stateMachineStore.matches('frontend.pageSelected.info.layout')}
       <LayoutEditor
         onStyleChanged={prop => stateMachineStore.send('UPDATEPROP', prop)}
         {component} />
-    {:else if $stateMachineStore.matches('info.events')}
+    {:else if $stateMachineStore.matches('frontend.pageSelected.info.events')}
       <EventsEditor {component} {components} {onPropChanged} />
     {/if}
 
     <CodeEditor
-      showing={$stateMachineStore.matches('info.code.showing')}
+      showing={$stateMachineStore.matches('frontend.pageSelected.info.code.viewing')}
       bind:this={codeEditor}
       code={component._code}
       onCodeChanged={store.setComponentCode}

@@ -18,7 +18,6 @@ const setupRouter = writable => {
   const pushState = history.pushState
   history.pushState = () => {
     pushState.apply(history, arguments)
-    //fireEvents('pushState', arguments);
     writable.initialise()
   }
   window.addEventListener("hashchange", () => {

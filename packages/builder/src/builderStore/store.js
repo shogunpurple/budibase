@@ -38,7 +38,7 @@ import {
 import { buildCodeForScreens } from "./buildCodeForScreens"
 import { generate_screen_css } from "./generate_css"
 import { createStore } from "./createStore";
-import { componentPanelMachine } from "../stateMachines";
+import appStateMachine, { componentPanelMachine } from "../stateMachines";
 
 let appname = ""
 
@@ -72,14 +72,15 @@ export const getStore = () => {
 
   const store = writable(initial)
 
-  const storeBoundComponentPanelMachine = componentPanelMachine.withContext({
+  const storeBoundAppStateMachine = appStateMachine.withContext({
     component: initial.currentComponentInfo,
-  })
+    ...initial
+  });
 
-  const stateMachineStore = createStore(storeBoundComponentPanelMachine)
+  const stateMachineStore = createStore(storeBoundAppStateMachine);
 
   store.subscribe(s =>
-    stateMachineStore.send("CHANGECOMPONENT", {
+    stateMachineStore.send("CHANGE_COMPONENT", {
       component: s.currentComponentInfo,
     })
   )
@@ -114,9 +115,9 @@ export const getStore = () => {
   store.addStylesheet = addStylesheet(store)
   store.removeStylesheet = removeStylesheet(store)
   store.savePage = savePage(store)
-  store.showFrontend = showFrontend(store)
-  store.showBackend = showBackend(store)
-  store.showSettings = showSettings(store)
+  // store.showFrontend = showFrontend(store)
+  // store.showBackend = showBackend(store)
+  // store.showSettings = showSettings(store)
   store.useAnalytics = useAnalytics(store)
   store.createGeneratedComponents = createGeneratedComponents(store)
   store.addChildComponent = addChildComponent(store)
@@ -130,6 +131,69 @@ export const getStore = () => {
 }
 
 export default getStore
+
+export const initialisePure = async (initial) => {
+  appname = window.location.hash
+    ? last(window.location.hash.substr(1).split("/"))
+    : ""
+
+  if (!appname) {
+    initial.apps = await api.get(`/_builder/api/apps`).then(r => r.json())
+    initial.hasAppPackage = false
+    // store.set(initial)
+    return initial
+  }
+
+  const pkg = await api
+    .get(`/_builder/api/${appname}/appPackage`)
+    .then(r => r.json())
+
+  const [main_screens, unauth_screens] = await Promise.all([
+    api.get(`/_builder/api/${appname}/pages/main/screens`).then(r => r.json()),
+    api
+      .get(`/_builder/api/${appname}/pages/unauthenticated/screens`)
+      .then(r => r.json()),
+  ])
+
+  pkg.pages = {
+    componentLibraries: ["@budibase/standard-components"],
+    stylesheets: [],
+    main: {
+      ...pkg.pages.main,
+      _screens: Object.values(main_screens),
+    },
+    unauthenticated: {
+      ...pkg.pages.unauthenticated,
+      _screens: Object.values(unauth_screens),
+    },
+  }
+
+
+  initial.libraries = await loadLibs(appname, pkg)
+  initial.generatorLibraries = await loadGeneratorLibs(appname, pkg)
+  initial.loadLibraryUrls = () => loadLibUrls(appname, pkg)
+  initial.appname = appname
+  initial.pages = pkg.pages
+  initial.hasAppPackage = true
+  initial.hierarchy = pkg.appDefinition.hierarchy
+  initial.accessLevels = pkg.accessLevels
+  initial.screens = values(pkg.screens)
+  initial.generators = generatorsArray(pkg.components.generators)
+  initial.components = values(pkg.components.components)
+  initial.actions = values(pkg.appDefinition.actions)
+  initial.triggers = pkg.appDefinition.triggers
+
+  if (!!initial.hierarchy && !isEmpty(initial.hierarchy)) {
+    initial.hierarchy = constructHierarchy(initial.hierarchy)
+    const shadowHierarchy = createShadowHierarchy(initial.hierarchy)
+    if (initial.currentNode !== null)
+      initial.currentNode = getNode(shadowHierarchy, initial.currentNode.nodeId)
+  }
+
+  // store.set(initial)
+
+  return initial
+}
 
 const initialise = (store, initial) => async () => {
   appname = window.location.hash
@@ -168,8 +232,6 @@ const initialise = (store, initial) => async () => {
   }
 
 
-  // populate the new store
-
   initial.libraries = await loadLibs(appname, pkg)
   initial.generatorLibraries = await loadGeneratorLibs(appname, pkg)
   initial.loadLibraryUrls = () => loadLibUrls(appname, pkg)
@@ -199,12 +261,12 @@ const initialise = (store, initial) => async () => {
 const generatorsArray = generators =>
   pipe(generators, [keys, filter(k => k !== "_lib"), map(k => generators[k])])
 
-const showSettings = store => () => {
-  store.update(s => {
-    s.showSettings = !s.showSettings
-    return s
-  })
-}
+// const showSettings = store => () => {
+//   store.update(s => {
+//     s.showSettings = !s.showSettings
+//     return s
+//   })
+// }
 
 const useAnalytics = store => () => {
   store.update(s => {
@@ -213,19 +275,19 @@ const useAnalytics = store => () => {
   })
 }
 
-const showBackend = store => () => {
-  store.update(s => {
-    s.isBackend = true
-    return s
-  })
-}
+// const showBackend = store => () => {
+//   store.update(s => {
+//     s.isBackend = true
+//     return s
+//   })
+// }
 
-const showFrontend = store => () => {
-  store.update(s => {
-    s.isBackend = false
-    return s
-  })
-}
+// const showFrontend = store => () => {
+//   store.update(s => {
+//     s.isBackend = false
+//     return s
+//   })
+// }
 
 const newRecord = (store, useRoot) => () => {
   store.update(s => {

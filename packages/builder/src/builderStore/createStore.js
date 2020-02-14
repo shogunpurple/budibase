@@ -7,7 +7,7 @@ export function createStore(machine, options) {
   const { subscribe } = readable(machine.initialState, set => {
     service.onTransition(state => {
       if (state.changed) {
-        console.log(state)
+        console.log("transition occurred", state);
         set(state)
       }
     })
@@ -23,4 +23,4 @@ export function createStore(machine, options) {
     subscribe,
     send: service.send,
   }
-}
+};

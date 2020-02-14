@@ -57,7 +57,7 @@
     selectedEvent = null
   }
 
-  $: modalOpen = $stateMachineStore.matches("info.events.editing");
+  $: modalOpen = $stateMachineStore.matches("frontend.pageSelected.info.events.editing");
 
 </script>
 

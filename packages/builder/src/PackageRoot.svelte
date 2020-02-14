@@ -1,6 +1,6 @@
 <script>
   import IconButton from "./common/IconButton.svelte"
-  import { store } from "./builderStore"
+  import { store, stateMachineStore } from "./builderStore"
   import UserInterfaceRoot from "./userInterface/UserInterfaceRoot.svelte"
   import BackendRoot from "./BackendRoot.svelte"
   import { fade } from "svelte/transition"
@@ -16,21 +16,21 @@
                     color="var(--slate)"
                     hoverColor="var(--secondary75)"/> -->
     <span
-      class:active={$store.isBackend}
+      class:active={$stateMachineStore.matches("backend")}
       class="topnavitem"
-      on:click={store.showBackend}>
+      on:click={() => stateMachineStore.send("BACKEND")}>
       Backend
     </span>
     <span
-      class:active={!$store.isBackend}
+      class:active={$stateMachineStore.matches("frontend")}
       class="topnavitem"
-      on:click={store.showFrontend}>
+      on:click={() => stateMachineStore.send("FRONTEND")}>
       Frontend
     </span>
   </div>
 
   <div class="content">
-    {#if $store.isBackend}
+    {#if $stateMachineStore.matches("backend")}
       <div in:fade out:fade>
         <BackendRoot />
       </div>

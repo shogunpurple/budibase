@@ -14,13 +14,6 @@
     return props
   }
 
-  $: iframe &&
-    console.log(
-      iframe.contentDocument.head.insertAdjacentHTML(
-        "beforeend",
-        `<\style></style>`
-      )
-    )
   $: hasComponent = !!$store.currentPreviewItem
   $: styles = hasComponent ? $store.currentPreviewItem._css : ""
 
