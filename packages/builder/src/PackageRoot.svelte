@@ -16,13 +16,13 @@
                     color="var(--slate)"
                     hoverColor="var(--secondary75)"/> -->
     <span
-      class:active={$stateMachineStore.matches("backend")}
+      class:active={$stateMachineStore.matches("initialized.backend")}
       class="topnavitem"
       on:click={() => stateMachineStore.send("BACKEND")}>
       Backend
     </span>
     <span
-      class:active={$stateMachineStore.matches("frontend")}
+      class:active={$stateMachineStore.matches("initialized.frontend")}
       class="topnavitem"
       on:click={() => stateMachineStore.send("FRONTEND")}>
       Frontend
@@ -30,7 +30,7 @@
   </div>
 
   <div class="content">
-    {#if $stateMachineStore.matches("backend")}
+    {#if $stateMachineStore.matches("initialized.backend")}
       <div in:fade out:fade>
         <BackendRoot />
       </div>

@@ -61,7 +61,7 @@ export const getStore = () => {
     currentNodeIsNew: false,
     errors: [],
     activeNav: "database",
-    isBackend: true,
+    // isBackend: true,
     hasAppPackage: false,
     accessLevels: { version: 0, levels: [] },
     currentNode: null,
